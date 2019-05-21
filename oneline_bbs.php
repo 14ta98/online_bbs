@@ -10,7 +10,6 @@
 
     $errors = array();
 
-    echo $_SERVER['REQUEST_METHOD'];
     // POSTなら保存処理実行
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 名前が正しく入力されているかチェック
@@ -31,21 +30,32 @@
             $comment = $_POST['comment'];
         }
 
+        /* 文字セットを utf8 に変更する */
+        if (!mysqli_set_charset($link, "utf8")) {
+            printf("Error loading character set utf8: %s\n", mysqli_error($link));
+            exit();
+        } else {
+            printf("Current character set: %s\n", mysqli_character_set_name($link));
+        }
+
         // エラーがなければ保存
         if (count($errors) === 0) {
+            $name = mysqli_real_escape_string($link,$name);
+            $comment = mysqli_real_escape_string($link,$name);
+            $date = date('Y-m-d H:i:s');
+
             // 保存するためのSQL文を作成
-            $sql = "INSERT INTO 'post' ('name','comment','created_at') VALUES ('"
-            .mysqli_real_escape_string($name) . "','"
-            .mysqli_real_escape_string($name) . "','"
-            .date('Y-m-d H:i:s') ."')";
+            $sql = "INSERT INTO post (name,comment,created_at) VALUES (
+                '$name','$comment','$date')";
             // 保存する
             mysqli_query($link,$sql);
         }
+
     }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,5 +78,11 @@
         ひとこと:<input type="text" name="comment" size="60" /><br />
         <input type="submit" name="submit" value="送信"/>
     </form>
+
+    <?php
+        // 投稿された内容を取得するSQLを作成して結果を取得
+        $sql = "SELECT * FROM post ORDER BY created_at DESC";
+        $result = mysqli_query($link,$sql);
+    ?>
 </body>
 </html>
