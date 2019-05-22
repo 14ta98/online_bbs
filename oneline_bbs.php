@@ -83,6 +83,29 @@
         // 投稿された内容を取得するSQLを作成して結果を取得
         $sql = "SELECT * FROM post ORDER BY created_at DESC";
         $result = mysqli_query($link,$sql);
+
     ?>
+
+    <?php if ($result !== false && mysqli_num_rows($result)): ?>
+    <ul>
+        <?php while ($post = mysqli_fetch_assoc($result)):?>
+        <li>
+            <?php echo htmlspecialchars($post['name'],ENT_QUOTES,'UTF-8'); ?>;
+            <?php echo htmlspecialchars($post['comment'],ENT_QUOTES,'UTF-8'); ?>;
+            <?php echo htmlspecialchars($post['created_at'],ENT_QUOTES,'UTF-8'); ?>;
+        </li>
+    <?php endwhile; ?>
+    </ul>
+<?php endif; ?>
+<?php
+// 取得結果を解放して接続を閉じる
+mysqli_free_result($result);
+mysqli_close($link);
+print_r($_SERVER['HTTP_HOST']);
+print_r($_SERVER['REQUEST_URI']);
+// header('Location: http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+exit;
+?>
+
 </body>
 </html>
