@@ -84,6 +84,17 @@
         $sql = "SELECT * FROM post ORDER BY created_at DESC";
         $result = mysqli_query($link,$sql);
 
+        // 取得した結果を$postsに格納
+        // $posts = array();
+        // if($result !== false && mysqli_num_rows($result)) {
+        //     while ($post = mysqli_fetch_assoc($result)) {
+        //         $posts[] = $post;
+        //     }
+        // }
+
+        // mysqli_free_result($result);
+        // mysqli_close($link)
+
     ?>
 
     <?php if ($result !== false && mysqli_num_rows($result)): ?>
